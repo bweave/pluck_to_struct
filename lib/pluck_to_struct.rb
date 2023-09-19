@@ -38,11 +38,11 @@ module PluckToStruct # rubocop:disable Style/Documentation
     end
 
     def build_klass_name(columns)
-      uniquie_identifiers = [
+      unique_identifiers = [
         "Plucked",
         *columns.map(&:to_s).map(&:parameterize).map(&:underscore)
       ].compact
-      uniquie_identifiers.join("_")
+      unique_identifiers.join("_")
     end
   end
 end
