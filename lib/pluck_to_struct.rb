@@ -13,13 +13,7 @@ module PluckToStruct # rubocop:disable Style/Documentation
       columns = (selects.presence || column_names)
       method_names = build_method_names(columns)
       klass_name = custom_klass_name.presence || build_klass_name(columns)
-
-      struct =
-        if const_defined?(klass_name)
-          const_get(klass_name)
-        else
-          const_set(klass_name, Struct.new(*method_names))
-        end
+      struct = build_struct(klass_name, method_names)
 
       pluck(*columns).map { |row_values| struct.new(*row_values) }
     end
@@ -43,6 +37,14 @@ module PluckToStruct # rubocop:disable Style/Documentation
         *columns.map(&:to_s).map(&:parameterize).map(&:underscore)
       ].compact
       unique_identifiers.join("_")
+    end
+
+    def build_struct(klass_name, method_names)
+      if const_defined?(klass_name)
+        const_get(klass_name)
+      else
+        const_set(klass_name, Struct.new(*method_names))
+      end
     end
   end
 end
