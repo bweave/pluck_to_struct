@@ -18,6 +18,15 @@ module PluckToStruct # rubocop:disable Style/Documentation
       pluck(*columns).map { |row_values| struct.new(*row_values) }
     end
 
+    def pluck_to_hash(*selects)
+      columns = (selects.presence || column_names)
+      method_names = build_method_names(columns)
+
+      pluck(*columns).map do |row_values|
+        method_names.zip(Array.wrap(row_values)).to_h
+      end
+    end
+
     private
 
     def build_method_names(columns)
