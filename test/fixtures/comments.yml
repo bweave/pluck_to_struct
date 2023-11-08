@@ -1,0 +1,39 @@
+---
+first_post_comment_one:
+  author: george
+  post: first_post
+  body: Ooh, ooh, ahhhhh.
+first_post_comment_two:
+  author: the_man
+  post: first_post
+  body: Be careful, George!
+first_post_comment_three:
+  author: bill
+  post: first_post
+  body: That's pretty good for a city kid, George!
+
+second_post_comment_one:
+  author: george
+  post: second_post
+  body: Ooh, ooh, ahhhhh.
+second_post_comment_two:
+  author: the_man
+  post: second_post
+  body: Be careful, George!
+second_post_comment_three:
+  author: bill
+  post: second_post
+  body: That's pretty good for a city kid, George!
+
+third_post_comment_one:
+  author: george
+  post: third_post
+  body: Ooh, ooh, ahhhhh.
+third_post_comment_two:
+  author: the_man
+  post: third_post
+  body: Be careful, George!
+third_post_comment_three:
+  author: bill
+  post: third_post
+  body: That's pretty good for a city kid, George!

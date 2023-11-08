@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class PluckToStructTest < Minitest::Test # rubocop:disable Metrics/ClassLength
+class PluckToStructTest < ActiveSupport::TestCase # rubocop:disable Metrics/ClassLength
   test "it has a version" do
     refute_nil ::PluckToStruct::VERSION
   end

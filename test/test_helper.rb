@@ -1,39 +1,26 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "pluck_to_struct"
+# Configure Rails Environment
+ENV["RAILS_ENV"] = "test"
 
-require "pry"
-require "minitest/autorun"
+require_relative "../test/dummy/config/environment"
+ActiveRecord::Migrator.migrations_paths = [
+  File.expand_path("../test/dummy/db/migrate", __dir__)
+]
+require "rails/test_help"
+
+# Load fixtures from the engine
+if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+  ActiveSupport::TestCase.fixture_paths = [
+    File.expand_path("fixtures", __dir__)
+  ]
+  ActionDispatch::IntegrationTest.fixture_paths =
+    ActiveSupport::TestCase.fixture_paths
+  ActiveSupport::TestCase.file_fixture_path =
+    ActiveSupport::TestCase.fixture_paths.map { |path| "#{path}/files" }
+  ActiveSupport::TestCase.fixtures :all
+end
+
 require "minitest/focus"
 require "minitest/pride"
-require "active_record"
-
-Dir["#{File.dirname(__FILE__)}/support/models/*.rb"].each { |f| require f }
-require "support/database"
-
-setup_database
-
-module Minitest
-  class Test
-    # Helper to define a test method using a String. Under the hood, it replaces
-    # spaces with underscores and defines the test method.
-    #
-    #   test "verify something" do
-    #     ...
-    #   end
-    def self.test(name, &block)
-      test_name = "test_#{name.gsub(/\s+/, "_")}".to_sym
-      defined = method_defined? test_name
-      raise "#{test_name} is already defined in #{self}" if defined
-
-      if block_given?
-        define_method(test_name, &block)
-      else
-        define_method(
-          test_name
-        ) { flunk "No implementation provided for #{name}" }
-      end
-    end
-  end
-end
+require "pry"

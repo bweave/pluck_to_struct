@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "pluck_to_struct/version"
-require "active_record"
-require "active_support/concern"
-require "active_support/inflector"
+require "pluck_to_struct/version"
+require "pluck_to_struct/railtie"
 
 module PluckToStruct # rubocop:disable Style/Documentation
   extend ActiveSupport::Concern

@@ -1,0 +1,13 @@
+---
+first_post:
+  author: herbert_meninger
+  title: First Post
+  body: This is the first post.
+second_post:
+  author: herbert_meninger
+  title: Second Post
+  body: This is the second post.
+third_post:
+  author: herbert_meninger
+  title: Third Post
+  body: This is the third post.
