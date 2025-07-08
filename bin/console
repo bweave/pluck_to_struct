@@ -1,0 +1,175 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "pluck_to_struct"
+require "irb"
+
+# Set up in-memory database
+require "active_record"
+require "sqlite3"
+
+ActiveRecord::Base.establish_connection(
+  adapter: "sqlite3",
+  database: ":memory:"
+)
+
+# Create database schema
+ActiveRecord::Schema.define do
+  create_table :users do |t|
+    t.string :name
+    t.string :email
+    t.integer :age
+    t.boolean :active, default: true
+    t.timestamps
+  end
+
+  create_table :posts do |t|
+    t.string :title
+    t.text :content
+    t.integer :user_id
+    t.boolean :published, default: false
+    t.integer :views, default: 0
+    t.timestamps
+  end
+
+  create_table :comments do |t|
+    t.text :content
+    t.integer :post_id
+    t.integer :user_id
+    t.timestamps
+  end
+
+  create_table :categories do |t|
+    t.string :name
+    t.text :description
+    t.timestamps
+  end
+
+  create_table :post_categories do |t|
+    t.integer :post_id
+    t.integer :category_id
+    t.timestamps
+  end
+end
+
+# Define models
+class User < ActiveRecord::Base
+  has_many :posts
+  has_many :comments
+end
+
+class Post < ActiveRecord::Base
+  belongs_to :user
+  has_many :comments
+  has_many :post_categories
+  has_many :categories, through: :post_categories
+end
+
+class Comment < ActiveRecord::Base
+  belongs_to :post
+  belongs_to :user
+end
+
+class Category < ActiveRecord::Base
+  has_many :post_categories
+  has_many :posts, through: :post_categories
+end
+
+class PostCategory < ActiveRecord::Base
+  belongs_to :post
+  belongs_to :category
+end
+
+# Create sample data
+puts "Setting up sample data..."
+
+# Create users
+alice = User.create!(name: "Alice Johnson", email: "alice@example.com", age: 28, active: true)
+bob = User.create!(name: "Bob Smith", email: "bob@example.com", age: 32, active: true)
+charlie = User.create!(name: "Charlie Brown", email: "charlie@example.com", age: 25, active: false)
+diana = User.create!(name: "Diana Prince", email: "diana@example.com", age: 30, active: true)
+
+# Create categories
+tech = Category.create!(name: "Technology", description: "Tech-related posts")
+lifestyle = Category.create!(name: "Lifestyle", description: "Lifestyle and personal posts")
+business = Category.create!(name: "Business", description: "Business and entrepreneurship")
+
+# Create posts
+post1 = Post.create!(
+  title: "Getting Started with Ruby", 
+  content: "Ruby is a great programming language...", 
+  user: alice, 
+  published: true, 
+  views: 150
+)
+
+post2 = Post.create!(
+  title: "My Morning Routine", 
+  content: "I wake up at 6 AM every day...", 
+  user: alice, 
+  published: true, 
+  views: 89
+)
+
+post3 = Post.create!(
+  title: "Building a Startup", 
+  content: "Starting a business is challenging...", 
+  user: bob, 
+  published: true, 
+  views: 203
+)
+
+post4 = Post.create!(
+  title: "Draft Post", 
+  content: "This is still a draft...", 
+  user: bob, 
+  published: false, 
+  views: 0
+)
+
+post5 = Post.create!(
+  title: "My Travel Adventures", 
+  content: "Last year I visited 10 countries...", 
+  user: diana, 
+  published: true, 
+  views: 67
+)
+
+# Associate posts with categories
+PostCategory.create!(post: post1, category: tech)
+PostCategory.create!(post: post2, category: lifestyle)
+PostCategory.create!(post: post3, category: business)
+PostCategory.create!(post: post4, category: business)
+PostCategory.create!(post: post5, category: lifestyle)
+
+# Create comments
+Comment.create!(content: "Great article!", post: post1, user: bob)
+Comment.create!(content: "Thanks for sharing!", post: post1, user: diana)
+Comment.create!(content: "Very inspiring!", post: post2, user: charlie)
+Comment.create!(content: "Love this routine!", post: post2, user: diana)
+Comment.create!(content: "Solid advice!", post: post3, user: alice)
+Comment.create!(content: "Helpful tips!", post: post3, user: diana)
+Comment.create!(content: "Amazing photos!", post: post5, user: alice)
+
+puts "✅ Sample data created successfully!"
+puts ""
+puts "📊 Data Summary:"
+puts "  Users: #{User.count}"
+puts "  Posts: #{Post.count} (#{Post.where(published: true).count} published)"
+puts "  Comments: #{Comment.count}"
+puts "  Categories: #{Category.count}"
+puts ""
+puts "🚀 Available Models: User, Post, Comment, Category, PostCategory"
+puts ""
+puts "💡 Example pluck_to_struct usage:"
+puts '  User.all.pluck_to_struct(:name, :email)'
+puts '  Post.joins(:user).pluck_to_struct("posts.title", "users.name")'
+puts '  User.includes(:posts).pluck_to_struct("users.id", "users.name", "posts.id", "posts.title", nested: true)'
+puts ""
+puts "🔍 Try these queries:"
+puts '  users = User.all.pluck_to_struct'
+puts '  posts_with_authors = Post.joins(:user).pluck_to_struct("posts.title", "users.name", "posts.views")'
+puts '  nested_users = User.includes(:posts).pluck_to_struct("users.id", "users.name", "posts.title", nested: true)'
+puts ""
+
+IRB.start(__FILE__)
