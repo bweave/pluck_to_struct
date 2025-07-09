@@ -17,10 +17,19 @@ In your Rails model, include the `PluckToStruct` concern:
 ```ruby
 class User < ApplicationRecord
   include PluckToStruct
+  has_many :posts
+end
+
+class Post < ApplicationRecord
+  include PluckToStruct
+  belongs_to :user
 end
 
 # Then, you can use the `pluck_to_struct` method to retrieve data as Structs:
 users = User.pluck_to_struct(:id, :name, :email)
+users = User.pluck_to_struct("id", "name", "email")
+users = User.pluck_to_struct(:id, :name, "email AS email_address")
+users = User.joins(:posts).pluck_to_struct(:id, :name, "COUNT(*) AS posts_count")
 
 # Specify a custom Struct class if needed:
 Pilot = Struct.new(:id, :callsign, :email)
