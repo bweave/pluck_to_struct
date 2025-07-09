@@ -61,15 +61,7 @@ module PluckToStruct
 
       return [] if plucked_data.empty?
 
-      attribute_names = selects.map do |select|
-        table_and_column, alias_name = select.to_s.split(/\sAS\s/i)
-        (alias_name.presence || table_and_column)
-          .parameterize
-          .underscore
-          .remove("#{table_name}_")
-          .to_sym
-      end
-
+      attribute_names = build_attribute_names(selects)
       struct_class = if klass_name
         Object.const_get(klass_name)
       else
@@ -80,6 +72,19 @@ module PluckToStruct
         row_array = columns.length == 1 ? [ row ] : row
         result = struct_class.new(*row_array)
         block ? block.call(result) : result
+      end
+    end
+
+    private
+
+    def build_attribute_names(selects)
+      selects.map do |select|
+        table_and_column, alias_name = select.to_s.split(/\sAS\s/i)
+        (alias_name.presence || table_and_column)
+          .parameterize
+          .underscore
+          .remove("#{table_name}_")
+          .to_sym
       end
     end
   end
