@@ -4,12 +4,27 @@ PluckToStruct is an include-able concern for your Rails models that allows you t
 
 ## Installation
 
-TODO
+Add it to your Gemfile:
+
+```
+gem 'pluck_to_struct'
+```
 
 ## Usage
 
-TODO
+In your Rails model, include the `PluckToStruct` concern:
 
+```ruby
+class User < ApplicationRecord
+  include PluckToStruct
+end
+
+# Then, you can use the `pluck_to_struct` method to retrieve data as Structs:
+users = User.pluck_to_struct(:id, :name, :email)
+
+# Specify a custom Struct class if needed:
+Pilot = Struct.new(:id, :callsign, :email)
+pilots = User.pluck_to_struct(:id, :name, :email, struct_class: Pilot)
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at <https://github.com/example/pluck_to_struct>.
