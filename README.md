@@ -24,18 +24,27 @@ class Post < ApplicationRecord
   include PluckToStruct
   belongs_to :user
 end
+```
 
-# Then, you can use the `pluck_to_struct` method to retrieve data as Structs:
+Then, you can use the `pluck_to_struct` method to retrieve data as Structs:
+
+```ruby
 users = User.pluck_to_struct(:id, :name, :email)
 users = User.pluck_to_struct("id", "name", "email")
 users = User.pluck_to_struct(:id, :name, "email AS email_address")
 users = User.joins(:posts).pluck_to_struct(:id, :name, "COUNT(*) AS posts_count")
+```
 
-# Specify a custom Struct class if needed:
+Specify a custom Struct class for more control and flexibility:
+
+```ruby
 Pilot = Struct.new(:id, :callsign, :email)
 pilots = User.pluck_to_struct(:id, :name, :email, struct_class: Pilot)
+```
 
-# You can also pass a block:
+You can also pass a block:
+
+```ruby
 users = User.pluck_to_struct(:id, :name, :email) do |user|
   user.email = user.email.upcase
   user
