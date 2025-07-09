@@ -54,7 +54,7 @@ module PluckToStruct
   end
 
   class_methods do
-    def pluck_to_struct(*columns, klass_name: nil)
+    def pluck_to_struct(*columns, klass_name: nil, &block)
       selects = (columns.presence || column_names).map(&:to_s)
       safe_selects = selects.map { |col| Arel.sql(col) }
       plucked_data = pluck(*safe_selects)
@@ -78,7 +78,8 @@ module PluckToStruct
 
       plucked_data.map do |row|
         row_array = columns.length == 1 ? [ row ] : row
-        struct_class.new(*row_array)
+        result = struct_class.new(*row_array)
+        block ? block.call(result) : result
       end
     end
   end

@@ -289,4 +289,15 @@ class TestPluckToStruct < Minitest::Test
       User.limit(1).pluck_to_struct(expr)
     end
   end
+
+  test "plucking and passing a block" do
+    results = User.pluck_to_struct(:name, :email) do |user|
+      "#{user.name} <#{user.email}>"
+    end
+
+    assert_equal 3, results.length
+    assert_equal "#{@user1.name} <#{@user1.email}>", results.first
+    assert_equal "#{@user2.name} <#{@user2.email}>", results.second
+    assert_equal "#{@user3.name} <#{@user3.email}>", results.last
+  end
 end

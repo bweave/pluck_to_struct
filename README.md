@@ -25,11 +25,18 @@ users = User.pluck_to_struct(:id, :name, :email)
 # Specify a custom Struct class if needed:
 Pilot = Struct.new(:id, :callsign, :email)
 pilots = User.pluck_to_struct(:id, :name, :email, struct_class: Pilot)
+
+# You can also pass a block:
+users = User.pluck_to_struct(:id, :name, :email) do |user|
+  user.email = user.email.upcase
+  user
+end
+```
+
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at <https://github.com/example/pluck_to_struct>.
+Bug reports and pull requests are welcome on GitHub at <https://github.com/bweave/pluck_to_struct>.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
