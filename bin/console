@@ -54,11 +54,15 @@ end
 
 # Define models
 class User < ActiveRecord::Base
+  include PluckToStruct
+
   has_many :posts
   has_many :comments
 end
 
 class Post < ActiveRecord::Base
+  include PluckToStruct
+
   belongs_to :user
   has_many :comments
   has_many :post_categories
@@ -66,16 +70,22 @@ class Post < ActiveRecord::Base
 end
 
 class Comment < ActiveRecord::Base
+  include PluckToStruct
+
   belongs_to :post
   belongs_to :user
 end
 
 class Category < ActiveRecord::Base
+  include PluckToStruct
+
   has_many :post_categories
   has_many :posts, through: :post_categories
 end
 
 class PostCategory < ActiveRecord::Base
+  include PluckToStruct
+
   belongs_to :post
   belongs_to :category
 end
@@ -96,42 +106,42 @@ business = Category.create!(name: "Business", description: "Business and entrepr
 
 # Create posts
 post1 = Post.create!(
-  title: "Getting Started with Ruby", 
-  content: "Ruby is a great programming language...", 
-  user: alice, 
-  published: true, 
+  title: "Getting Started with Ruby",
+  content: "Ruby is a great programming language...",
+  user: alice,
+  published: true,
   views: 150
 )
 
 post2 = Post.create!(
-  title: "My Morning Routine", 
-  content: "I wake up at 6 AM every day...", 
-  user: alice, 
-  published: true, 
+  title: "My Morning Routine",
+  content: "I wake up at 6 AM every day...",
+  user: alice,
+  published: true,
   views: 89
 )
 
 post3 = Post.create!(
-  title: "Building a Startup", 
-  content: "Starting a business is challenging...", 
-  user: bob, 
-  published: true, 
+  title: "Building a Startup",
+  content: "Starting a business is challenging...",
+  user: bob,
+  published: true,
   views: 203
 )
 
 post4 = Post.create!(
-  title: "Draft Post", 
-  content: "This is still a draft...", 
-  user: bob, 
-  published: false, 
+  title: "Draft Post",
+  content: "This is still a draft...",
+  user: bob,
+  published: false,
   views: 0
 )
 
 post5 = Post.create!(
-  title: "My Travel Adventures", 
-  content: "Last year I visited 10 countries...", 
-  user: diana, 
-  published: true, 
+  title: "My Travel Adventures",
+  content: "Last year I visited 10 countries...",
+  user: diana,
+  published: true,
   views: 67
 )
 
@@ -173,3 +183,4 @@ puts '  nested_users = User.includes(:posts).pluck_to_struct("users.id", "users.
 puts ""
 
 IRB.start(__FILE__)
+
