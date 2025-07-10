@@ -63,7 +63,7 @@ module PluckToStruct
 
       attribute_names = build_attribute_names(selects)
       struct_class = if klass_name
-        Object.const_get(klass_name)
+        Object.const_get(klass_name.to_s)
       else
         PluckToStruct.get_or_create_struct_class(self.name, attribute_names)
       end

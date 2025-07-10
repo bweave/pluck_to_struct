@@ -126,7 +126,7 @@ class TestPluckToStruct < Minitest::Test
   end
 
   test "plucking with a custom struct class" do
-    alice = User.pluck_to_struct(:id, :name, :email, klass_name: "CustomUser").first
+    alice = User.pluck_to_struct(:id, :name, :email, klass_name: CustomUser).first
 
     assert_instance_of CustomUser, alice
     assert_equal @user1.name, alice.name
@@ -135,7 +135,7 @@ class TestPluckToStruct < Minitest::Test
   end
 
   test "plucking with a custom struct class and aliased attributes" do
-    alice = User.pluck_to_struct("name AS call_sign", klass_name: "TopGunUser").first
+    alice = User.pluck_to_struct("name AS call_sign", klass_name: TopGunUser).first
 
     assert_instance_of TopGunUser, alice
     assert_equal @user1.name, alice.call_sign
